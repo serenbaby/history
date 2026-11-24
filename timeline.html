@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>历史时间线 · 高中三年历史知识清单</title>
 <meta name="description" content="104 个有明确纪年的高中历史考点，按六个时代排成时间轴；点事件跳转对应章节与教材页。">
-<link rel="stylesheet" href="assets/css/timeline.css?v=20261124b">
+<script>(function(){try{var t=localStorage.getItem("hs.theme");if(!t){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.dataset.theme=t}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/css/timeline.css?v=20261124c">
+<link rel="stylesheet" href="assets/css/timeline-editorial.css?v=20261124a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317394f'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='serif' font-size='38' fill='%23f4fbfe'%3E%E5%8F%B2%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -17,6 +20,7 @@
     <div><strong>历史时间线</strong><small>高中三年历史知识清单</small></div>
   </div>
   <div class="tl-actions">
+    <button class="btn theme-btn" id="themeToggle" title="切换明暗主题" aria-label="切换明暗主题">夜</button>
     <button class="btn" id="csvBtn" title="导出 CSV">CSV</button>
     <button class="btn" id="jsonBtn" title="导出 JSON">JSON</button>
     <button class="btn icon" id="printBtn" title="打印" aria-label="打印">⌘P</button>
@@ -70,6 +74,7 @@
 
 <button class="totop" id="toTop" title="回到顶部" aria-label="回到顶部" hidden>↑</button>
 
-<script src="assets/js/timeline.js?v=20261124b" defer></script>
+<script src="assets/js/chrome.js?v=20261124b" defer></script>
+<script src="assets/js/timeline.js?v=20261124c" defer></script>
 </body>
 </html>
