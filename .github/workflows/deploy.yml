@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -20,28 +20,52 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Enable Pages
-        uses: actions/configure-pages@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          enablement: true
+          fetch-depth: 0
 
       - name: Download site bundle
         env:
           BUNDLE_URL: https://aka.doubaocdn.com/s/k9zgP9Ej89
         run: |
           set -euo pipefail
-          mkdir -p site
           curl -fL "$BUNDLE_URL" -o bundle.zip
           unzip -q bundle.zip -d bundle
           test -f bundle/history/index.html
-          cp -r bundle/history/. site/
-          rm -rf site/.git
-          ls -la site | head
+          cp -a bundle/history/. .
+          rm -rf bundle bundle.zip
+          touch .nojekyll
+
+      - name: Commit source files
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No source changes'
+          else
+            git commit -m 'deploy: 同步 66 课知识库与历史时间线源码'
+            git push origin HEAD:main
+          fi
+
+      - name: Enable Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Build Pages artifact
+        run: |
+          mkdir -p /tmp/site
+          rsync -a --exclude='.git' --exclude='.github' ./ /tmp/site/
+          test -f /tmp/site/index.html
+          du -sh /tmp/site
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: /tmp/site
 
   deploy:
     needs: build
