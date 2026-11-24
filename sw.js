@@ -4,11 +4,12 @@
  *  - 静态资源：缓存优先 + 后台更新（stale-while-revalidate）
  * 重新部署后如资源有变，改下面的 CACHE 版本号即可整体换新。
  */
-const CACHE = 'hs-static-v9';
+const CACHE = 'hs-static-v10';
 const ASSETS = [
   './',
   './index.html',
   './assets/css/app.css',
+  './assets/css/hidden-fix.css',
   './assets/js/app.js',
   './assets/js/store.js',
   './assets/js/search-worker.js',
@@ -47,7 +48,6 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
-  // 页面导航：先走网络，断网时回退首页
   if (req.mode === 'navigate') {
     e.respondWith(
       fetch(req)
@@ -61,7 +61,6 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // 其余静态资源：缓存优先，同时后台刷新
   e.respondWith(
     caches.match(req).then((hit) => {
       const net = fetch(req)
