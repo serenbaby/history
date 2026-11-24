@@ -3,8 +3,6 @@ name: Deploy history site
 on:
   push:
     branches: [main]
-  issues:
-    types: [opened]
   workflow_dispatch:
 
 permissions:
@@ -17,34 +15,17 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      SITE_ZIP: https://aka.doubaocdn.com/s/5d8kRDkrvF
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fetch site bundle
+      - name: Build static site
         run: |
           set -euo pipefail
           mkdir -p /tmp/site
-          curl -fL "$SITE_ZIP" -o /tmp/site.zip
-          unzip -q /tmp/site.zip -d /tmp/site
+          rsync -a --exclude='.git' --exclude='.github' ./ /tmp/site/
           test -f /tmp/site/index.html
           test -f /tmp/site/timeline.html
-
-      - name: Sync source on main
-        run: |
-          set -euo pipefail
-          rsync -a --exclude='.git' --exclude='.github' /tmp/site/ ./
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          if git diff --cached --quiet; then
-            echo 'no source changes'
-          else
-            git commit -m 'deploy: visual refresh 2026-11-24'
-            git push origin HEAD:main
-          fi
 
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4
