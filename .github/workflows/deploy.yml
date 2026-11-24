@@ -1,6 +1,8 @@
 name: Deploy history site
 
 on:
+  push:
+    branches: [main]
   issues:
     types: [opened]
   workflow_dispatch:
